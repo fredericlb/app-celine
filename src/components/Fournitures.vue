@@ -1,11 +1,12 @@
 <template>
     <div class="main">
         <md-list>
-            <md-list-item v-if="items.length === 0" class="nothing">
+            <md-list-item v-if="fournitures.length === 0" class="nothing">
                 Aucune fourniture à acheter :)
             </md-list-item>
-            <md-list-item v-for="(item,index) in items" key="index" :class="{ remove: item.deleteTimer }">
-                <md-checkbox v-on:change="removeItem(index)">{{item.name}}</md-checkbox>
+            <md-list-item v-for="item in fournitures" key="item.id"
+                          :class="{ remove: willBeRemoved[item.id] !== undefined }">
+                <md-checkbox v-on:change="removeItem(item.id)">{{item.name}}</md-checkbox>
             </md-list-item>
         </md-list>
         <div class="bottom-add">
@@ -21,28 +22,34 @@
 </template>
 
 <script>
+  import Vue from 'vue'
+
   export default {
     data () {
       return {
-        items: [],
+        willBeRemoved: {},
         newItem: ''
+      }
+    },
+    computed: {
+      fournitures: function () {
+        return this.$store.state.fournitures
       }
     },
     methods: {
       addItem: function () {
-        this.items.push({name: this.newItem, deleteTimer: null})
+        this.$store.commit('addFourniture', this.newItem)
         this.newItem = ''
       },
-      removeItem: function (index) {
-        const item = this.items[index]
-        if (item.deleteTimer) {
-          clearTimeout(item.deleteTimer)
-          item.deleteTimer = null
+      removeItem: function (id) {
+        if (this.willBeRemoved[id]) {
+          clearTimeout(this.willBeRemoved[id])
+          Vue.set(this.willBeRemoved, id, undefined)
         } else {
-          item.deleteTimer = setTimeout(() => {
-            const idx = this.items.indexOf(item)
-            this.items.splice(idx, 1)
+          const timer = setTimeout(() => {
+            this.$store.commit('removeFourniture', id)
           }, 2000)
+          Vue.set(this.willBeRemoved, id, timer)
         }
       }
     }
