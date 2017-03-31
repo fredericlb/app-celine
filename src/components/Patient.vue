@@ -1,16 +1,12 @@
 <template>
-    <md-list>
-        <md-list-item v-for="patient in patients" key="{{patient.id}}" :href="hrefForId(patient.id)">
-            {{patient.nom}} {{patient.prenom}}
-        </md-list-item>
-    </md-list>
+    <div>{{patient.nom}} {{patient.prenom}}</div>
 </template>
 
 <script>
   export default {
     name: 'patients',
     computed: {
-      patients: function () { return this.$store.state.patients }
+      patient: function () { return this.$store.state.patients.find(p => p.id === +this.$route.params.id) }
     },
     data () {
       return {}
@@ -19,6 +15,10 @@
       hrefForId: function (id) {
         return '#/patients/' + id
       }
+    },
+    mounted: function () {
+      const patient = this.patient
+      this.$store.commit('setPage', {title: patient.prenom + ' ' + patient.nom, back: '#/patients'})
     }
   }
 </script>

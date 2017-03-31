@@ -1,6 +1,9 @@
 <template>
   <div id="app">
     <md-toolbar>
+      <md-button class="md-icon-button" v-if="back !== null" :href="back">
+        <md-icon>arrow_back</md-icon>
+      </md-button>
       <h1 class="md-title">{{ title }}</h1>
     </md-toolbar>
     <router-view></router-view>
@@ -24,7 +27,10 @@ export default {
       return cat
     },
     title: function () {
-      return this.$route.name
+      return this.$route.name || this.$store.state.title
+    },
+    back: function () {
+      return this.$route.name ? null : this.$store.state.back
     }
   }
 }

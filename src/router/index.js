@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Accueil from '@/components/Accueil'
 import Patients from '@/components/Patients'
 import Fournitures from '@/components/Fournitures'
+import Patient from '@/components/Patient'
 
 Vue.use(Router)
 
@@ -17,6 +18,10 @@ export default new Router({
       path: '/patients',
       name: 'Patients',
       component: Patients
+    },
+    {
+      path: '/patients/:id',
+      component: Patient
     },
     {
       path: '/fournitures',
