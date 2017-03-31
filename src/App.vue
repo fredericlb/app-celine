@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <md-toolbar>
-      <h1 class="md-title">Accueil</h1>
+      <h1 class="md-title">{{ title }}</h1>
     </md-toolbar>
     <router-view></router-view>
     <md-bottom-bar class="bottom-bar">
@@ -22,6 +22,9 @@ export default {
     currentCat: function () {
       let [, cat] = this.$route.path.split('/')
       return cat
+    },
+    title: function () {
+      return this.$route.name
     }
   }
 }
