@@ -1,15 +1,49 @@
 <template>
-    <div class="hello">
-        Les fournitures
+    <div class="main">
+        <md-list>
+            <md-list-item v-if="items.length === 0" class="nothing">
+                Aucune fourniture à acheter :)
+            </md-list-item>
+            <md-list-item v-for="(item,index) in items" key="index" :class="{ remove: item.deleteTimer }">
+                <md-checkbox v-on:change="removeItem(index)">{{item.name}}</md-checkbox>
+            </md-list-item>
+        </md-list>
+        <div class="bottom-add">
+            <md-input-container>
+                <label>Fourniture à ajouter</label>
+                <md-input placeholder="Fourniture..." v-model="newItem"></md-input>
+                <md-button class="md-icon-button md-list-action" v-on:click.native="addItem">
+                    <md-icon class="md-primary">add</md-icon>
+                </md-button>
+            </md-input-container>
+        </div>
     </div>
 </template>
 
 <script>
   export default {
-    name: 'fournitures',
     data () {
       return {
-        msg: 'Les fournitures'
+        items: [],
+        newItem: ''
+      }
+    },
+    methods: {
+      addItem: function () {
+        this.items.push({name: this.newItem, deleteTimer: null})
+        this.newItem = ''
+      },
+      removeItem: function (index) {
+        const item = this.items[index]
+        if (item.deleteTimer) {
+          clearTimeout(item.deleteTimer)
+          item.deleteTimer = null
+        } else {
+          item.deleteTimer = setTimeout(() => {
+            const idx = this.items.indexOf(item)
+            this.items.splice(idx, 1)
+          }, 2000)
+        }
       }
     }
   }
@@ -17,21 +51,20 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-    h1, h2 {
-        font-weight: normal;
+    .main {
+        position: relative;
     }
-
-    ul {
-        list-style-type: none;
-        padding: 0;
+    .bottom-add {
+        position: fixed;
+        bottom: 50px;
+        left: 20px;
+        right: 20px;
     }
-
-    li {
-        display: inline-block;
-        margin: 0 10px;
+    .remove {
+        color: red;
+        text-decoration: line-through;
     }
-
-    a {
-        color: #42b983;
+    .nothing {
+        color: #999;
     }
 </style>
